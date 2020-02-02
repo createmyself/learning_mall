@@ -3,7 +3,6 @@ package com.mmall.common;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import javax.xml.ws.Response;
 import java.io.Serializable;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
