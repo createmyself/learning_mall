@@ -26,7 +26,14 @@
     from mmall_order_item
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <select id="selectByUserIdOrderNo" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from mmall_order_item
+      where user_id = #{userId}
+      and order_no = #{orderNo}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
@@ -112,6 +119,18 @@
         now(),
       </if>
     </trim>
+  </insert>
+  <insert id="batchInsert">
+    insert into mmall_order_item (id, user_id, order_no,
+      product_id, product_name, product_image,
+      current_unit_price, quantity, total_price,
+      create_time, update_time)
+      <foreach collection="orderItemList" item="item" index="index" separator=",">
+        (
+            #{item.id}, #{item.userId}, #{item.orderNo}, #{item.productId}, #{item.productName}, #{item.productImage},
+            #{item.currentUnitPrice}, #{item.quantity}, #{item.totalPrice}, now(), now()
+        )
+      </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.mmall.pojo.OrderItem" >
     update mmall_order_item

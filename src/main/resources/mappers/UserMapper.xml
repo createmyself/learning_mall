@@ -28,7 +28,7 @@
     select count(1) from mmall_user
     where username = #{username}
   </select>
-  <select id="selectLogin" resultType="com.mmall.pojo.User">
+  <select id="selectLogin" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from mmall_user
     where  username = #{username}

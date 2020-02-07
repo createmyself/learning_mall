@@ -21,9 +21,50 @@
     from mmall_cart
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <select id="selectByUserIdProductId" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from mmall_cart
+      where user_id = #{userId}
+      and product_id = #{productId}
+    </select>
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from mmall_cart
+    where user_id = #{userId}
+  </select>
+  <select id="selectCartProductCheckedStatusByUserId" resultType="java.lang.Integer">
+    select count(1)
+    from mmall_cart
+    where checked = 0
+    and user_id = #{userId}
+  </select>
+  <select id="selectCartProductCount" resultType="java.lang.Integer">
+    select ifnull(sum(quantity), 0) as count
+    from mmall_cart
+    where user_id = #{userId}
+  </select>
+    <select id="selectCheckedCartByUserId" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from mmall_cart
+      where user_id = #{userId}
+      and checked = 1
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_cart
     where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByUserIdProductIds">
+    delete from mmall_cart
+    where user_id = #{userId}
+    <if test="productIdList != null">
+      and product_id in
+      <foreach collection="productIdList" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
   </delete>
   <insert id="insert" parameterType="com.mmall.pojo.Cart" >
     insert into mmall_cart (id, user_id, product_id, 
@@ -115,5 +156,14 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="checkOrUnCheck">
+    update mmall_cart
+    set checked = #{checked},
+    update_time = now()
+    where user_id = #{userId}
+    <if test="productId != null" >
+      and product_id = #{productId}
+    </if>
   </update>
 </mapper>
